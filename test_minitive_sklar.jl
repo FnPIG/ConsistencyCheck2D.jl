@@ -145,6 +145,44 @@ for C in copulas
     println()
     println()
     println("--------------------------------------------")
+    println("checking sets:  [-∞, x] × [-∞, y]")
+    println("--------------------------------------------")
+    println("box                                            |      μ_xy     |      [bel, plaus]     |      bel_sklar      |      bel_survival ")
+
+    failures = 0
+
+    for i = 1:ntests
+
+        bounds = rand(2)
+
+        box = interval(-∞, bounds[1]) × interval(-∞, bounds[2])
+
+        prob = calc_measure(BivDist, box)
+        if prob < 0; prob = 0;end
+
+        probInt = calc_bounds(carts, masses, box)
+
+        bel1 = sklar_survival(a1, a2, C, box)
+        if bel1 < 0; bel1 = 0; end
+        bel2 = minitive_sklar(a1, a2, C, box)
+
+        t1 =  probInt.lo <= prob
+        t2 = bel1 <= prob + tolerance
+        t3 = bel2 <= prob
+
+        if any( [!t1, !t2, !t3])
+            println("$box     |     $prob     |      $(probInt)      |      $(bel2)      |      $(bel1)")
+            failures += 1
+        end
+
+    end
+    println()
+    println("Failures: $failures/$ntests")
+
+    println()
+    println()
+    println()
+    println("--------------------------------------------")
     println("checking sets:  [x, ∞] × [-∞, y]")
     println("--------------------------------------------")
     println("box                                            |      μ_xy     |      [bel, plaus]     |      bel_sklar      |      bel_survival ")
@@ -156,6 +194,46 @@ for C in copulas
         bounds = rand(2)
 
         box = interval(bounds[1], ∞) × interval( -∞, bounds[2])
+
+        prob = calc_measure(BivDist, box)
+        if prob < 0; prob = 0;end
+
+        probInt = calc_bounds(carts, masses, box)
+
+        bel1 = sklar_survival(a1, a2, C, box)
+        if bel1 < 0; bel1 = 0; end
+        bel2 = minitive_sklar(a1, a2, C, box)
+
+        t1 =  probInt.lo <= prob
+        t2 = bel1 <= prob + tolerance
+        t3 = bel2 <= prob
+
+        if any( [!t1, !t2, !t3])
+            println("$box     |     $prob     |      $(probInt)      |      $(bel2)      |      $(bel1)")
+            failures += 1
+        end
+
+    end
+    println()
+    println("Failures: $failures/$ntests")
+
+
+
+    println()
+    println()
+    println()
+    println("--------------------------------------------")
+    println("checking sets:  [∞, x] × [y, ∞]")
+    println("--------------------------------------------")
+    println("box                                            |      μ_xy     |      [bel, plaus]     |      bel_sklar      |      bel_survival ")
+
+    failures = 0
+
+    for i = 1:ntests
+
+        bounds = rand(2)
+
+        box = interval(-∞, bounds[1]) × interval(bounds[2],  ∞)
 
         prob = calc_measure(BivDist, box)
         if prob < 0; prob = 0;end
