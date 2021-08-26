@@ -58,8 +58,8 @@ end
 a1 = Fuzzy(0, 0.5, 1, steps = 500)    # Marginal fuzzy 1
 a2 = Fuzzy(0, 0.5, 1, steps = 500)    # Marginal fuzzy 2
 
-a1Dist = Uniform(0, 0.5)               # Marginal dist 1
-a2Dist = Uniform(0, 0.5)               # Marginal dist 2
+a1Dist = Uniform(0, 1)               # Marginal dist 1
+a2Dist = Uniform(0, 1)               # Marginal dist 2
 
 
 @test check_inside(a1, a1Dist)      # checks if marginals are consistent
@@ -67,9 +67,9 @@ a2Dist = Uniform(0, 0.5)               # Marginal dist 2
 
 copulas = [W(), Gaussian(-0.7), Gaussian(-0.5), Gaussian(-0.2), Pi(), Gaussian(0.2), Gaussian(0.5), Gaussian(0.7), M()]
 
-ntests = 10^4
+ntests = 10^3
 
-tolerance = 10^-14
+tolerance = 10^-15
 
 for C in copulas
 
@@ -90,6 +90,13 @@ for C in copulas
     println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%")
     println()
 
+    println()
+    println(" Computing Cartesian product ...")
+    println()
+
+    BivDist = C(a1Dist, a2Dist)         # bivariate distribution
+    masses, cart = PossibilisticArithmetic.mobiusTransform2D(a1, a2 , C)    # Should be called something else
+    carts = IntervalBox.(cart)
 
     println()
     println()
@@ -99,10 +106,6 @@ for C in copulas
     println("--------------------------------------------")
     println("box                                            |      μ_xy     |      [bel, plaus]     |      bel_sklar      |      bel_survival ")
 
-
-    BivDist = C(a1Dist, a2Dist)         # bivariate distribution
-    masses, cart = PossibilisticArithmetic.mobiusTransform2D(a1, a2 , C)    # Should be called something else
-    carts = IntervalBox.(cart)
 
     failures = 0
 
@@ -145,7 +148,7 @@ for C in copulas
     println()
     println()
     println("--------------------------------------------")
-    println("checking sets:  [-∞, x] × [-∞, y]")
+    println("checking sets:  [x, ∞] × [y, ∞]")
     println("--------------------------------------------")
     println("box                                            |      μ_xy     |      [bel, plaus]     |      bel_sklar      |      bel_survival ")
 
@@ -155,7 +158,7 @@ for C in copulas
 
         bounds = rand(2)
 
-        box = interval(-∞, bounds[1]) × interval(-∞, bounds[2])
+        box = interval(bounds[1], ∞) × interval(bounds[2], ∞)
 
         prob = calc_measure(BivDist, box)
         if prob < 0; prob = 0;end
