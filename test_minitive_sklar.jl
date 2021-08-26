@@ -223,7 +223,7 @@ for C in copulas
     println()
     println()
     println("--------------------------------------------")
-    println("checking sets:  [∞, x] × [y, ∞]")
+    println("checking sets:  [-∞, x] × [y, ∞]")
     println("--------------------------------------------")
     println("box                                            |      μ_xy     |      [bel, plaus]     |      bel_sklar      |      bel_survival ")
 
