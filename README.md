@@ -2,6 +2,8 @@
 A Julia script for checking the consistency between a 2D distribution and a 2D possibility distribution using copulas
 
 
+Only sets which fail will be printed.
+
 ## Install
 
 Add the required packages
